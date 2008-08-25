@@ -5,7 +5,7 @@ module Fixie
     type    = (self.kind_of? Class) ? self.to_s : self.class.to_s
     id      = (self.kind_of? Class) ? nil : self.id
     task    = task.to_s
-    options = args.empty? ? nil : Base64.encode64(Marshal.dump(args))
+    options = args.empty? ? nil : Fixie::Jobs.encode(args) 
 
     job = Job.create! :klass => type, :record_id => id, :the_method => task, :options => options
 
