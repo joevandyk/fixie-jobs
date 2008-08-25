@@ -1,0 +1,44 @@
+= Fixie Job Runner
+
+A little async job runner.  Still in beginning stages, but it works, and the api is the best, damn it.
+No stupid job classes or anything.
+
+===  Create this migration:
+
+  class AddFixieJobs < ActiveRecord::Migration
+    def self.up
+      create_table :fixie_jobs do |t|
+        t.column :the_method, :string,  :null => false
+        t.column :klass,      :text,    :null => false
+        t.column :options,    :string
+        t.column :record_id,  :integer
+        t.column :created_at, :datetime
+        t.column :priority,   :integer
+      end
+    end
+
+    def self.down
+      drop_table :fixie_jobs
+    end
+  end
+
+
+=== Start Job Runner
+  rake fixie:jobs:start
+
+=== Start Jobs 
+You have two options:
+
+If you have a ActiveRecord object, call push on it:
+  user = User.find :first
+  user.push :update_profile             # calls user.update_profile
+  user.push :update_profile, "string"   # calls user.update_profile("string")
+
+Or, if you have a class, call push on it:
+  User.push :destroy_all               # deletes all users
+
+
+=== Jobs Get Ran 
+The job runner will run them.  Right now, after the job is ran (successfully or unsucessfully, the 
+job is deleted from the db).  That could probably be fixed later.  This isn't multiple runner safe
+at the moment, either.  Coming soon... or fork this and do it yourself.
